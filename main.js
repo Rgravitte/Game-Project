@@ -1,4 +1,4 @@
-let keysKeysBeingPressed =[];
+let keysBeingPressed =[];
 let theGame;
 class Game{
   constructor(){
@@ -13,75 +13,113 @@ class Game{
   setInterval(()=>{
     this.ctx.clearRect(0, 0, 200, 500);
     this.drawEverything();
-  },100)
+
+  // this.golfBallTwo.moveGolfBallForward(); 
+ 
+  setTimeout(()=>{
+    this.golfBallTwo.moveGolfBallForward()
+  },3000);
+},100)
   }
   drawEverything(){
     this.golfBallTwo.drawGolfBall();
     this.obstacle.drawObstacle();
     this.hole.spawnHole();
-    this.extraLives();
+    this.extraLives(10);
+    this.extraLives(25);
+    this.extraLives(40);
+    this.extraLives(55);
+    return this;
   }
-  extraLives(){
-    this.x = 15;
+  extraLives(x){
+    this.x = x;
     this.y = 480;
     this.width = 6;
     this.ctx.beginPath();
-    this.ctx.arc(this.x += 10, this.y, this.width, 0, 2*Math.PI, true);
+    this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'white';
     this.ctx.fill();
-    return this;
+
+
+// this.golfBallHolder2 = [
+//   this.extraLives(55),
+//   this.extraLives(25),
+//   this.extraLives(40),
+//   this.extraLives(10)
+// ];
+// for(let i = 0; i < this.golfBallHolder2.length; i++){
+//   this.golfBallHolder.push(this.golfBallHolder2[i])
+  
+  
+
+// }
+// return this.golfBallHolder;
+// }
+  
+
 }
 }
+
 class GolfBall{
   constructor(x, y){
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.x = x;
     this.y = y;
     this.width = 6;
+    this.move();
     //goint to try to call moveForward inside move
-    this.moveGolfBallForward();
+    // this.moveGolfBallForward();
     // this.moveGolfBallForward();
     // this.updateBall();
   }
   drawGolfBall(){
+   
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'white';
     this.ctx.fill();
-    return this;
   }
+
+
+
   // updateBall(){
   //   this.y += 1;
   //   return this;
   // }
   moveGolfBallForward(){
-    setInterval(()=>{
+
+    // setTimeout(()=>{
       // moves golfball up the y axis
-      this.y -= 1;
+      // setTimeout(()=>{
+      this.y -= 5;
 
-    },50)
-    // return this
+    // },2000);
+      return this
+    // },1000)
 }
-//trying to set time out so the golfball moves automatically
-  // move(){
-  //   this.canMove(this.x, this.y);
-  //   if(keysBeingPressed.includes("ArrowUp")){
-  //     setTimeout(()=>{
-  //       this.moveGolfBallForward();
-  //     },2000)
-
-  //     }
-  //     }
+// trying to set time out so the golfball moves automatically
+  move(){
+    this.canMove(this.x, this.y);
+    //console not recognizing commands  
+    if(this.commands = ("ArrowUp")){
+      // setTimeout(()=>{
+        this.moveGolfBallForward();
+        console.log('hey');    
+      // },2000)
       
-    
+      }
+      return this;
+      }
+      
+
 //checking if objects can move or not
   
-  // canMove(futureX, futureY){
-  //   let result = true;
-  //   if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
-  //     result = false;
-  //   }
-  // }
+  canMove(futureX, futureY){
+    let result = true;
+    if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
+      result = false;
+    }
+  }
 }
 
 class Hole{
@@ -130,9 +168,11 @@ document.onkeydown = function(e){
   let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp']
   if(commands.includes(e.key)){
     e.preventDefault();
+    keysBeingPressed.push(e.key);
   }
   if(!keysBeingPressed.includes(e.key)){
     keysBeingPressed.push(e.key);
+    console.log(e.which);
   }
    
 }
@@ -140,10 +180,11 @@ document.onkeydown = function(e){
 
 
 document.onkeyup = function(e){
-  let theIndex = keysBeingPressed.indexOf(e.key)
+  let theIndex = keysBeingPressed.indexOf(e.key);
   console.log(theIndex)
   if(theIndex != -1){
     keysBeingPressed.splice(theIndex,1)
+    console.log(keysBeingPressed);
   }
 }
 
