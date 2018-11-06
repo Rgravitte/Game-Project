@@ -12,7 +12,12 @@ class Game{
     this.lives = 5;
   // physics engine
   setInterval(()=>{
+
     this.ctx.clearRect(0, 0, 200, 500);
+    if(this.golfBallTwo.y <= 0) {
+      this.golfBallTwo.y = 0;
+    }
+    
     this.drawEverything();
 },100)}
 //ends constructor function
@@ -61,12 +66,19 @@ class GolfBall{
     // only want the golfball to move forward at this interval until it reaches 450 on the y axis
     // if i allow it to go the length of the board it will double the its incremental y value since it is called in the physics engine on drawEverything function
   moveGolfBallForward(){
-    if(this.y > 450){
+    if(this.y >= 0){
       setInterval(()=>{
       this.y -= 5;
+      console.log(this.y);
     },50)
-    return this;}
-    else{return;}} 
+      
+      
+}else{
+  this.y === 0;
+}
+
+
+} 
   //for moving golfball forward on initial uparrow keypress at a set interval --- then the physics engine allows it to keep moving
   moveForward(){
     //Confirms the golfball has permission to move

@@ -14,6 +14,7 @@ class Game{
   setInterval(()=>{
     this.ctx.clearRect(0, 0, 200, 500);
     this.drawEverything();
+    console.log(this.y);
 },100)}
 //ends constructor function
   drawEverything(){
@@ -60,28 +61,38 @@ class GolfBall{
     this.ctx.fill();}
     // only want the golfball to move forward at this interval until it reaches 450 on the y axis
     // if i allow it to go the length of the board it will double the its incremental y value since it is called in the physics engine on drawEverything function
-  moveGolfBallForward(){
-    if(this.y > 450){
-      setInterval(()=>{
-      this.y -= 5;
-    },50)
-    return this;}
-    else{return;}} 
+    moveGolfBallForward(){
+      this.canMove(this.x, this.y);
+      if(this.y > 0){
+        setInterval(()=>{
+        this.y -= 5;
+      },50)
+      }else{
+      return
+    }} 
   //for moving golfball forward on initial uparrow keypress at a set interval --- then the physics engine allows it to keep moving
   moveForward(){
     //Confirms the golfball has permission to move
-    this.canMove(this.x, this.y);
-    //sets a 2 second timer before the golfball starts to move automatically
+    // this.canMove(this.x, this.y);
+    if(this.canMove(this.x, this.y - 5)){
     setTimeout(()=>{
-      this.moveGolfBallForward()
+      this.moveGolfBallForward();
+      console.log(this.y);
     },2000)
     return this;}
+    else{
+      this.result = false;
+    }}
     //should be used to check for collisions and create the border for the game to keep objects within the canvas
   canMove(futureX, futureY){
     let result = true;
-    if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
+    console('bjbbb')
+    if(futureX < 0 || futureX > 200 || futureY < 100 || futureY > 500){
+    console('bjbbb')
+
       result = false;
-    }return result;}   
+    }return result;
+  }   
     }
     // end of the golfball object
 
@@ -130,6 +141,6 @@ document.onkeydown = function(e){
   // if statements calling functions for each command
   if(e.which === 37) {theGame.golfBallTwo.moveleft();}
   if(e.which === 39) {theGame.golfBallTwo.moveRight();}
-  if(e.which === 38){theGame.golfBallTwo.moveForward();}
+  if(e.which === 38) {theGame.golfBallTwo.moveForward();}
    }
 
