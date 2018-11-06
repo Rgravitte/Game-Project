@@ -2,25 +2,20 @@ let keysBeingPressed =[];
 let theGame;
 class Game{
   constructor(){
-    this.golfBallTwo = new GolfBall(100, 470);
+    this.x = 100;
+    this.y = 470;
+    this.golfBallTwo = new GolfBall(this.x, this.y);
     this.golfBallHolder = [];
     this.obstacle = new Obstacle();
     this.hole = new Hole();
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.lives = 5;
-  
-  //physics engine
+  // physics engine
   setInterval(()=>{
     this.ctx.clearRect(0, 0, 200, 500);
     this.drawEverything();
-
-  // this.golfBallTwo.moveGolfBallForward(); 
- 
-  setTimeout(()=>{
-    this.golfBallTwo.moveGolfBallForward()
-  },3000);
-},100)
-  }
+},100)}
+//ends constructor function
   drawEverything(){
     this.golfBallTwo.drawGolfBall();
     this.obstacle.drawObstacle();
@@ -29,8 +24,7 @@ class Game{
     this.extraLives(25);
     this.extraLives(40);
     this.extraLives(55);
-    return this;
-  }
+    return this;}
   extraLives(x){
     this.x = x;
     this.y = 480;
@@ -38,184 +32,106 @@ class Game{
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'white';
-    this.ctx.fill();
-
-
-// this.golfBallHolder2 = [
-//   this.extraLives(55),
-//   this.extraLives(25),
-//   this.extraLives(40),
-//   this.extraLives(10)
-// ];
+    this.ctx.fill();}
+  }
+// golfBallHolder2 would be an array of drawings inside Game object not affiliated with GolfBall class. seperate so that they dont recieve golfball methods that might make them move
+// this.golfBallHolder2 = [this.extraLives(55),this.extraLives(25),this.extraLives(40),this.extraLives(10)];
+// for loop that would be used to splice/move golfball drawing placement when users lose a life
 // for(let i = 0; i < this.golfBallHolder2.length; i++){
 //   this.golfBallHolder.push(this.golfBallHolder2[i])
-  
-  
-
-// }
-// return this.golfBallHolder;
-// }
-  
-
-}
-}
-
 class GolfBall{
   constructor(x, y){
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.x = x;
     this.y = y;
-    this.width = 6;
-    this.move();
-    //goint to try to call moveForward inside move
-    // this.moveGolfBallForward();
-    // this.moveGolfBallForward();
-    // this.updateBall();
-  }
+    this.width = 6;}
+  // allows users to direct the golfball using left/right arrowkeys only when the y axis reaches 469(right after the first upArrow press)
+  moveleft() {
+    if(this.y < 469){   
+      this.x -= 10}}
+  moveRight(){
+    if(this.y < 469){
+    this.x += 10}}
+  // draws the first golfball in theGame class placed in the center of the canvas  
   drawGolfBall(){
-   
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'white';
-    this.ctx.fill();
-  }
-
-
-
-  // updateBall(){
-  //   this.y += 1;
-  //   return this;
-  // }
+    this.ctx.fill();}
+    // only want the golfball to move forward at this interval until it reaches 450 on the y axis
+    // if i allow it to go the length of the board it will double the its incremental y value since it is called in the physics engine on drawEverything function
   moveGolfBallForward(){
-
-    // setTimeout(()=>{
-      // moves golfball up the y axis
-      // setTimeout(()=>{
+    if(this.y > 450){
+      setInterval(()=>{
       this.y -= 5;
-
-    // },2000);
-      return this
-    // },1000)
-}
-// trying to set time out so the golfball moves automatically
-  move(){
+    },50)
+    return this;}
+    else{return;}} 
+  //for moving golfball forward on initial uparrow keypress at a set interval --- then the physics engine allows it to keep moving
+  moveForward(){
+    //Confirms the golfball has permission to move
     this.canMove(this.x, this.y);
-    //console not recognizing commands  
-    if(this.commands = ("ArrowUp")){
-      // setTimeout(()=>{
-        this.moveGolfBallForward();
-        console.log('hey');    
-      // },2000)
-      
-      }
-      return this;
-      }
-      
-
-//checking if objects can move or not
-  
+    //sets a 2 second timer before the golfball starts to move automatically
+    setTimeout(()=>{
+      this.moveGolfBallForward()
+    },2000)
+    return this;}
+    //should be used to check for collisions and create the border for the game to keep objects within the canvas
   canMove(futureX, futureY){
     let result = true;
     if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
       result = false;
+    }return result;}   
     }
-  }
-}
+    // end of the golfball object
 
 class Hole{
   constructor(){
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.x = Math.ceil(Math.random()*170 + 15);
     this.y = 20;
-    this.width = 12;
-  }
+    this.width = 12;}
   spawnHole(){
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'rgb(0, 0, 0)';
     this.ctx.fill();
-    return this;
-  }
+    return this;}
 }
-
-    class Obstacle{
-      constructor(){
+  // end of the Hole object
+class Obstacle{
+  constructor(){
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.x = Math.floor(Math.random()*100 + 50);
-    console.log(this.x);
     this.y = Math.ceil(Math.random()*200 +100);
-    console.log(this.y);
-    this.width = Math.floor(Math.random()*3); 
-    console.log(this.width);
-    this.height = Math.floor(Math.random()*2);
-    console.log(this.height);
-    this.size = Math.floor(Math.random()*30 + 15);
-    console.log(this.size);
-  }
+    this.size = Math.floor(Math.random()*30 + 15);}
   drawObstacle(){
     this.ctx.beginPath();
-    // this.ctx.scale(this.width, this.height);
+    // this.ctx.scale(this.width, this.height); -- trying to create an oval/random shape to represent a lake or sand trap
     this.ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
     this.ctx.fillStyle = 'blue';
     this.ctx.fill();
-    return this;
-  }
+    return this;}
 }
+//ends the obstacle class - may make extension for hill & sandtrap
+// when putt button is clicked a new game is created
 document.getElementById('start-button').onclick = function(){
-  theGame = new Game();
-}
+  theGame = new Game();}
+// sets the commands that are accepted on keypresses
 document.onkeydown = function(e){
-  let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp']
+  let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp'];
+  //keeps track of all ekeys that are accepted as valid commands
   if(commands.includes(e.key)){
     e.preventDefault();
-    keysBeingPressed.push(e.key);
-  }
+    keysBeingPressed.push(e.key);}
+    // all keys not included in array are spliced
   if(!keysBeingPressed.includes(e.key)){
-    keysBeingPressed.push(e.key);
-    console.log(e.which);
-  }
-   
-}
-
-
-
-document.onkeyup = function(e){
-  let theIndex = keysBeingPressed.indexOf(e.key);
-  console.log(theIndex)
-  if(theIndex != -1){
-    keysBeingPressed.splice(theIndex,1)
-    console.log(keysBeingPressed);
-  }
-}
-
-
-
-  // let newGolfBall = new GolfBall(100, 470);
-    // let newObstacle = new Obstacle();
-    // let newGolfBall2 = new GolfBall(10, 490);
-    // let newGolfBall3 = new GolfBall(25, 490);
-    // let newGolfBall4 = new GolfBall(40, 490);
-    // let newGolfBall5 = new GolfBall(55, 490);
-    // let newHole = new Hole();
-    // let newObstacle = new Obstacle();
-
-    // newHole.spawnHole();
-    // newObstacle.spawnObstacle();
-    // newGolfBall.drawGolfBall();
-    // newGolfBall2.drawGolfBall();
-    // newGolfBall3.drawGolfBall();
-    // newGolfBall4.drawGolfBall();
-    // newGolfBall5.drawGolfBall();
-    // newGolfBall.moveGolfBallForward();
-    // // newHole.spawnHole();
-    // newObstacle.spawnObstacle();
-
-
-  // moveGolfBall(){
-  //   console.log("the golf ball is moving")
-  // }
-
-
+    keysBeingPressed.splice(e.key, 0);}
+  // if statements calling functions for each command
+  if(e.which === 37) {theGame.golfBallTwo.moveleft();}
+  if(e.which === 39) {theGame.golfBallTwo.moveRight();}
+  if(e.which === 38){theGame.golfBallTwo.moveForward();}
+   }
 
 
 
