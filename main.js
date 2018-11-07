@@ -1,3 +1,7 @@
+// golfball class add this.canmove
+//can move function - check if i can move
+// moveforward/left right first line is if this.canmove
+
 let keysBeingPressed =[];
 let theGame;
 class Game{
@@ -7,43 +11,43 @@ class Game{
     this.golfBallTwo = new GolfBall(this.x, this.y);
     this.golfBallHolder = [];
     this.obstacle = new Obstacle();
+    this.obstacleHolder = [];
     this.hole = new Hole();
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.lives = 5;
-  // physics engine
-  setInterval(()=>{
+    // for(let i = 0; i < 5; i++){
+    //   var golfBall = new GolfBall(this.x, this.y)
+    //   this.golfBallHolder.push(golfBall);
+    // }
+    // physics engine
+    setInterval(()=>{
 
     this.ctx.clearRect(0, 0, 200, 500);
-    if(this.golfBallTwo.y <= 0) {
-      this.golfBallTwo.y = 0;
-    }
-    
+  
+
     this.drawEverything();
 },100)}
 //ends constructor function
   drawEverything(){
     this.golfBallTwo.drawGolfBall();
-    this.obstacle.drawObstacle();
     this.hole.spawnHole();
-    this.extraLives(10);
-    this.extraLives(25);
-    this.extraLives(40);
-    this.extraLives(55);
+    this.obstacle.drawObstacle();
+    this.obstacleHolder.push(this.obstacle);
+    
     return this;}
-  extraLives(x){
-    this.x = x;
-    this.y = 480;
-    this.width = 6;
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
-    this.ctx.fillStyle = 'white';
-    this.ctx.fill();}
-  }
+
+    }  // extraLives(x){
+  //   this.x = x;
+  //   this.y = 480;
+  //   this.width = 6;
+  //   this.ctx.beginPath();
+  //   this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
+  //   this.ctx.fillStyle = 'white';
+  //   this.ctx.fill();}
+  // }
 // golfBallHolder2 would be an array of drawings inside Game object not affiliated with GolfBall class. seperate so that they dont recieve golfball methods that might make them move
 // this.golfBallHolder2 = [this.extraLives(55),this.extraLives(25),this.extraLives(40),this.extraLives(10)];
 // for loop that would be used to splice/move golfball drawing placement when users lose a life
-// for(let i = 0; i < this.golfBallHolder2.length; i++){
-//   this.golfBallHolder.push(this.golfBallHolder2[i])
 class GolfBall{
   constructor(x, y){
     this.ctx = document.getElementById('game-board').getContext('2d');
@@ -52,11 +56,30 @@ class GolfBall{
     this.width = 6;}
   // allows users to direct the golfball using left/right arrowkeys only when the y axis reaches 469(right after the first upArrow press)
   moveleft() {
-    if(this.y < 469){   
-      this.x -= 10}}
+    if(this.canMove(this.x - 8, this.y - 2)){ 
+    if(this.y < 468){
+     
+      this.x -= 8;
+ 
+    }
+    else{
+      this.x += 40;
+    }
+  }
+    }
   moveRight(){
-    if(this.y < 469){
-    this.x += 10}}
+    if(this.canMove(this.x + 8, this.y - 2)){
+    if(this.y < 468){
+    
+    this.x += 8;
+
+  }
+    
+    else{
+      this.x -=40;
+    }
+  }
+  }
   // draws the first golfball in theGame class placed in the center of the canvas  
   drawGolfBall(){
     this.ctx.beginPath();
@@ -66,35 +89,58 @@ class GolfBall{
     // only want the golfball to move forward at this interval until it reaches 450 on the y axis
     // if i allow it to go the length of the board it will double the its incremental y value since it is called in the physics engine on drawEverything function
   moveGolfBallForward(){
-    if(this.y >= 0){
-      setInterval(()=>{
+  //  if(this.canMove(this.x, this.y + 5)){ 
+   let int =  setInterval(()=>{
+      if(this.y >= 0){
       this.y -= 5;
-      console.log(this.y);
-    },50)
-      
-      
-}else{
-  this.y === 0;
-}
+    }
+    else{
+      clearInterval(int);
+    }
+    },50);
+  // }
 
 
 } 
   //for moving golfball forward on initial uparrow keypress at a set interval --- then the physics engine allows it to keep moving
-  moveForward(){
-    //Confirms the golfball has permission to move
-    this.canMove(this.x, this.y);
+  move(){
+    
+    
     //sets a 2 second timer before the golfball starts to move automatically
+
+    if(this.canMove(this.x, this.y + 5)){ 
     setTimeout(()=>{
       this.moveGolfBallForward()
     },2000)
-    return this;}
+    return this;
+  }
+}
+
     //should be used to check for collisions and create the border for the game to keep objects within the canvas
   canMove(futureX, futureY){
     let result = true;
     if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
       result = false;
-    }return result;}   
     }
+
+    
+    //   // need to calculate the top left, top right, bottom left, and bottom right corner of each object
+      if(futureX < theGame.obstacle.x + theGame.obstacle.width && futureX+this.width > theGame.obstacle.x && futureY < theGame.obstacle.y+theGame.obstacle.height && futureY+this.height > theGame.obstacle.y ){
+        this.y = theGame.obstacle.y + theGame.obstacle.height + 5;
+        console.log('thats a lake');
+        result = false;
+    }
+    return result;
+  }
+
+
+   
+  }
+
+  
+
+
+    
     // end of the golfball object
 
 class Hole{
@@ -106,10 +152,11 @@ class Hole{
   spawnHole(){
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
-    this.ctx.fillStyle = 'rgb(0, 0, 0)';
+    this.ctx.fillStyle = 'black';
     this.ctx.fill();
     return this;}
 }
+
   // end of the Hole object
 class Obstacle{
   constructor(){
@@ -140,10 +187,26 @@ document.onkeydown = function(e){
   if(!keysBeingPressed.includes(e.key)){
     keysBeingPressed.splice(e.key, 0);}
   // if statements calling functions for each command
-  if(e.which === 37) {theGame.golfBallTwo.moveleft();}
-  if(e.which === 39) {theGame.golfBallTwo.moveRight();}
-  if(e.which === 38){theGame.golfBallTwo.moveForward();}
+  if(e.which === 37) {
+    if(theGame.golfBallTwo.canMove()){
+    theGame.golfBallTwo.moveleft();
+    }else{console.log('cant go that way')
+  }
+}
+  if(e.which === 39) {
+    if(theGame.golfBallTwo.canMove()){
+    theGame.golfBallTwo.moveRight();}
+    else{
+      console.log('cant go that way')
+    }
+  }
+  if(e.which === 38){
+    if(theGame.golfBallTwo.canMove()){
+    theGame.golfBallTwo.move();}
+   }else{
+    console.log('cant go that way')
    }
+  }
 
 
 
