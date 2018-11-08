@@ -13,26 +13,39 @@ class Game{
     this.obstacle = new Obstacle();
     this.obstacleHolder = [];
     this.hole = new Hole();
+    this.holeHolder = [];
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.lives = 5;
+    this.games = 10;
 
     this.ctx.save();
     setInterval(()=>{
 
       this.ctx.clearRect(0, 0, 200, 500);
-      
-      this.hole.spawnHole();
-      
-      this.golfBallTwo.drawGolfBall();
-      
-      this.obstacle.drawObstacle();
-
-      this.hole.madePuttCollision();
+      this.holeHolder[0].madePuttCollision();
 
     },100)
   }
 
-}
+  functionThatHoldsDrawings(){
+    
+  
+      this.golfBallHolder.push(this.golfBallTwo);
+    this.obstacleHolder.push(this.obstacle);
+    this.holeHolder.push(this.hole);
+    setInterval(()=>{
+      this.golfBallHolder[0].drawGolfBall();
+      this.obstacleHolder[0].drawObstacle();
+      this.holeHolder[0].spawnHole();
+    },100);
+
+
+    }
+    }
+    
+  
+
+
 class GolfBall{
   constructor(x, y){
     this.ctx = document.getElementById('game-board').getContext('2d');
@@ -66,7 +79,9 @@ class GolfBall{
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'white';
-    this.ctx.fill();}
+    this.ctx.fill();
+    return this;
+  }
   moveGolfBallForward(){
     if(this.canMove(this.x, this.y - 5)){
       if(this.y >= 0){
@@ -120,15 +135,20 @@ class Hole{
      
     if(theGame.golfBallTwo.x < this.x + this.width && this.x  + this.width > theGame.golfBallTwo.x && theGame.golfBallTwo.y <= this.y){
   
- 
-      
-    
       this.ctx.clearRect(0, 0, 200, 500);
-      theGame2 = new Game();
-      theGame2.anotherBall = new GolfBall(100, 470);
-      theGame2.anotherBall.drawGolfBall();
+ 
+      anotherBall = new GolfBall(100, 470);
+      theGame.golfBallHolder.push(anotherBall, 0);
+      // anotherBall.drawGolfBall();
+     
+    
+    
       hole2 = new Hole();
+      theGame.holeHolder.push(hole2);
+
       anotherObstacle = new Obstacle();
+      theGame.obstacleHolder.push(anotherObstacle);
+      // anotherObstacle.drawObstacle();
       
     }else{
       return 0;
@@ -161,8 +181,9 @@ class Obstacle{
     return this;}
 }
 document.getElementById('start-button').onclick = function(){
+  
   theGame = new Game();
-
+  theGame.functionThatHoldsDrawings();
 }
 document.onkeydown = function(e){
   let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp'];
