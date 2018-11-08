@@ -82,7 +82,16 @@ class GolfBall{
     let result = true;
     if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
       result = false;
-    }return result;}   
+    }
+    theGame.obstacles.forEach((obstacle)=>{
+      // need to calculate the top left, top right, bottom left, and bottom right corner of each object
+      if(futureX < obstacle.x+obstacle.width && futureX+this.width > obstacle.x && futureY < obstacle.y+obstacle.height && futureY+this.height > obstacle.y ){
+        this.y = obstacle.y + obstacle.height + 5;
+        result = false;
+      }
+    })
+    return result;
+}  
     }
     // end of the golfball object
 

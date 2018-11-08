@@ -1,4 +1,3 @@
-
 let keysBeingPressed =[];
 let theGame;
 class Game{
@@ -7,7 +6,7 @@ class Game{
     this.y = 470;
     this.golfBallTwo = new GolfBall(this.x, this.y);
     this.golfBallHolder = [];
-    this.obstacle = new Obstacle();
+    this.obstacle = new Obstacle;
     this.obstacleHolder = [];
     this.hole = new Hole();
     this.ctx = document.getElementById('game-board').getContext('2d');
@@ -16,7 +15,7 @@ class Game{
     setInterval(()=>{
 
     this.ctx.clearRect(0, 0, 200, 500);
-  
+
 
     this.drawEverything();
 },100)}
@@ -26,6 +25,7 @@ class Game{
     this.hole.spawnHole();
     this.obstacle.drawObstacle();
     return this;}
+    
 
     }  
 // golfBallHolder2 would be an array of drawings inside Game object not affiliated with GolfBall class. seperate so that they dont recieve golfball methods that might make them move
@@ -85,6 +85,7 @@ class GolfBall{
     }
     else{
       clearInterval(int);
+      theGame.clearRect(0, 0, 200, 500);
     }
     },50);
   // }
@@ -115,15 +116,11 @@ class GolfBall{
     
       // need to calculate the top left, top right, bottom left, and bottom right corner of each object
       if(futureX < theGame.obstacle.x + theGame.obstacle.width && futureX+this.width > theGame.obstacle.x && futureY < theGame.obstacle.y+theGame.obstacle.width && futureY+this.width > theGame.obstacle.y ){
-        theGame.lives = theGame.lives - 1;
-        console.log(theGame.lives);
-        theGame.ctx.clearRect(0, 0, 200, 500);
-        theGame.clearInterval();
-        alert('Thats a lake');
+        // theGame.checkLives();
         
         theGame.golfBallTwo = new GolfBall(100, 470);
-       
         theGame = new Game();
+  
         result = false;
         
     }
@@ -169,6 +166,7 @@ class Obstacle{
     this.ctx.rect(this.x, this.y, this.width, this.height);
     this.ctx.fillStyle = 'blue';
     this.ctx.fill();
+
     return this;}
   // pushObstacle(){
   //   for(let i = 0; i < 2; i++){
@@ -179,7 +177,9 @@ class Obstacle{
 //ends the obstacle class - may make extension for hill & sandtrap
 // when putt button is clicked a new game is created
 document.getElementById('start-button').onclick = function(){
-  theGame = new Game();}
+  theGame = new Game();
+
+}
 // sets the commands that are accepted on keypresses
 document.onkeydown = function(e){
   let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp'];
@@ -203,4 +203,3 @@ document.onkeydown = function(e){
     theGame.golfBallTwo.move();}
    
   }
-
