@@ -85,7 +85,6 @@ class GolfBall{
     }
     else{
       clearInterval(int);
-      theGame.clearRect(0, 0, 200, 500);
     }
     },50);
   // }

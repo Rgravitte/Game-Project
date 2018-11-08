@@ -1,3 +1,4 @@
+let int;
 let keysBeingPressed =[];
 let theGame;
 let theGame2;
@@ -9,41 +10,37 @@ class Game{
     this.x = 100;
     this.y = 470;
     this.golfBallTwo = new GolfBall(this.x, this.y);
-    this.golfBallHolder = [];
+    this.golfBallHolder;
     this.obstacle = new Obstacle();
-    this.obstacleHolder = [];
+    // this.obstacleHolder;
     this.hole = new Hole();
-    this.holeHolder = [];
+    this.pinHolder;
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.lives = 5;
-    this.games = 10;
-
-    this.ctx.save();
+    // this.games = 10;
+ 
     setInterval(()=>{
-
+      console.log("this is the golfball pause ############# ", this.golfBallTwo.pause)
       this.ctx.clearRect(0, 0, 200, 500);
-      this.holeHolder[0].madePuttCollision();
+      this.pinHolder.madePuttCollision();
+      this.golfBallTwo.drawGolfBall();
+      this.obstacle.drawObstacle();
+      this.pinHolder.spawnHole();
 
     },100)
   }
 
   functionThatHoldsDrawings(){
     
+      // this.golfBallHolder = this.golfBallTwo;
+      this.obstacleHolder = new Obstacle();
+      this.pinHolder = new Hole();
+     
   
-      this.golfBallHolder.push(this.golfBallTwo);
-    this.obstacleHolder.push(this.obstacle);
-    this.holeHolder.push(this.hole);
-    setInterval(()=>{
-      this.golfBallHolder[0].drawGolfBall();
-      this.obstacleHolder[0].drawObstacle();
-      this.holeHolder[0].spawnHole();
-    },100);
-
-
     }
-    }
+  }
     
-  
+
 
 
 class GolfBall{
@@ -51,7 +48,9 @@ class GolfBall{
     this.ctx = document.getElementById('game-board').getContext('2d');
     this.x = x;
     this.y = y;
-    this.width = 6;}
+    this.width = 6;
+    this.pause = true;
+  }
     
     moveleft() {
       if(this.y < 468){
@@ -83,38 +82,63 @@ class GolfBall{
     return this;
   }
   moveGolfBallForward(){
-    if(this.canMove(this.x, this.y - 5)){
-      if(this.y >= 0){
-        true;
-      this.y -= 5;
-      }
-    }else{
-    false;
-    }
-  } 
-  move(){
-    // this.canMove(this.x, this.y);
-    let int = setInterval(()=>{
-      if(this.canMove(this.x, this.y - 5)){
-        this.moveGolfBallForward();
-      }else{
+    // clearInterval(int);
+if(this.pause === true){
+    // if(false){
+    //   return;
+    // }
+    int = setInterval(()=>{
+              // console.log(">>>>>>  moving forward <<<<<")
+        if(this.canMove(this.x, this.y - 5)){
+          this.y -= 5;
+        } else {
+          // console.log('=-=-=-=-=-=-=-=-=-')
+      
         clearInterval(int);
+          return false;
       }
     },50);
+  } else {
+    clearInterval(int);
+    return;
+  }
     
-    }
+    // } else {
+    //   console.log("nothing is happening .........")
+    //   return;
+    // }
+  }
+
   canMove(futureX, futureY){
+
     let result = true;
     if(futureX < 0 || futureX > 200 || futureY < 0 || futureY > 500){
       result = false;
     }
-    if(futureX < theGame.obstacle.x + theGame.obstacle.width && futureX+this.width > theGame.obstacle.x && futureY < theGame.obstacle.y+theGame.obstacle.width && futureY+this.width > theGame.obstacle.y ){
-      result = false;
-      theGame.lives - 1;
-      result = false;
+
+    // console.log(futureY, theGame.obstacle.y, theGame.obstacle.y + theGame.obstacle.height)
+    // console.log(this.width, theGame.obstacle.x, theGame.obstacle.x + theGame.obstacle.width)
+
+
+    console.log(futureX, this.x, theGame.obstacle.x + theGame.obstacle.width)
+
+   
+    // console.log(" >>>>>>>>>>>  this is the info of the ball position  <<<<<<<<<< ", futureX, futureY);
+    // console.log("the obstacle info %%%%%%%% ", theGame.obstacle.x, theGame.obstacle.y)
+    // console.log("the game obstacle with the width :::::::::::::::: ", theGame.obstacle.x + theGame.obstacle.width, theGame.obstacle.y + theGame.obstacle.height)
+
+    if(futureX < theGame.obstacle.x + theGame.obstacle.width && futureX+this.width > theGame.obstacle.x && futureY < theGame.obstacle.y+theGame.obstacle.height && futureY+this.width > theGame.obstacle.y ){
+      theGame.lives -= 1;
+      console.log('.................. ', theGame.lives);
+      console.log("what happens to the pause  ^^^^^^^ ", theGame.golfBallTwo.pause);
+ 
+      // console.log('.////////////////', result)
       alert('that was a lake');
-     
+      theGame.golfBallTwo.x = 100;
+      theGame.golfBallTwo.y = 470;
+      result = false;
   }
+  console.log("lets check out the pause now ------------- ", theGame.golfBallTwo.pause);
   return result;
   }
 }
@@ -129,31 +153,55 @@ class Hole{
     this.ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI, true);
     this.ctx.fillStyle = 'black';
     this.ctx.fill();
-    return this;}
+    return this;
+  }
 
     madePuttCollision(){
-     
-    if(theGame.golfBallTwo.x < this.x + this.width && this.x  + this.width > theGame.golfBallTwo.x && theGame.golfBallTwo.y <= this.y){
-  
-      this.ctx.clearRect(0, 0, 200, 500);
- 
-      anotherBall = new GolfBall(100, 470);
-      theGame.golfBallHolder.push(anotherBall, 0);
-      // anotherBall.drawGolfBall();
-     
-    
-    
-      hole2 = new Hole();
-      theGame.holeHolder.push(hole2);
+      // console.log();  
+      // console.log('**********************', theGame.pinHolder.y, theGame.golfBallTwo.y);
+      // console.log('#################', theGame.pinHolder.x + theGame.pinHolder.width, theGame.golfBallTwo.x);
+    if(theGame.golfBallTwo.x < theGame.pinHolder.x + theGame.pinHolder.width && theGame.golfBallTwo.x + theGame.golfBallTwo.width > theGame.pinHolder.x && theGame.golfBallTwo.y <= theGame.pinHolder.y){
+     console.log('you made it');
+      setTimeout(() => {
+        alert('nice job!');
+      }, 10);
+      theGame.golfBallTwo.pause = false;
+      theGame.golfBallTwo.y = 470;
+      theGame.golfBallTwo.x = 100;
+      console.log("the ball should pause ", theGame.golfBallTwo.pause);
+      return;
+      // theGame.pinholder = this.spawnHole();
+      // theGame.obstacle = new Obstacle();
 
-      anotherObstacle = new Obstacle();
-      theGame.obstacleHolder.push(anotherObstacle);
-      // anotherObstacle.drawObstacle();
-      
-    }else{
-      return 0;
+      // console.log('----------', theGame.obstacleHolder);
+      // console.log('==========', theGame.golfBallTwo);
+      // console.log('@@@@@@@@@@@@ ', theGame.golfBallTwo.pause);
     }
-    console.log('you mad it!')
+    if(theGame.golfBallTwo.y < 1) {
+      theGame.lives -=1;
+      console.log('fjesklahgfkuhjerskfghjklrsig', theGame.lives)
+        setTimeout(() => {
+          alert("Sorry you missed!!!");
+        }, 10);
+        // this.pause = true;
+        theGame.golfBallTwo.pause = false;
+        theGame.golfBallTwo.x = 100;
+        theGame.golfBallTwo.y = 470;
+        console.log("is the ball pausing <<<<<<<<<< ", theGame.golfBallTwo.pause);
+        return;
+       
+      // theGame.golfBallTwo.y = 470;
+      // theGame.golfBallTwo.x = 100;
+      // theGame.pinholder = this.spawnHole();
+      // theGame.obstacle = new Obstacle();
+      // return false;
+
+      // console.log('----------', theGame.obstacleHolder);
+      // console.log('==========', theGame.golfBallTwo);
+      // console.log('@@@@@@@@@@@@@ ', theGame.golfBallTwo.pause);
+      // return;
+    }
+   
     }
   }
     // console.log(theGame.golfBallTwo.x);
@@ -181,9 +229,13 @@ class Obstacle{
     return this;}
 }
 document.getElementById('start-button').onclick = function(){
+
+  clearInterval(int);
   
   theGame = new Game();
   theGame.functionThatHoldsDrawings();
+  console.log("the game info ........", theGame);
+  console.log("ball pause info >>>>> ", theGame.golfBallTwo.pause);
 }
 document.onkeydown = function(e){
   let commands = ['ArrowLeft', 'ArrowRight', 'ArrowUp'];
@@ -204,8 +256,10 @@ document.onkeydown = function(e){
     }
   
   if(e.which === 38){
+    theGame.golfBallTwo.pause = true;
   setTimeout(()=>{
-    theGame.golfBallTwo.move();
+    theGame.golfBallTwo.moveGolfBallForward();
+    
      },2000)
      commands.splice(2, 1);
     
